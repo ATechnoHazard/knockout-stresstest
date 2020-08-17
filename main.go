@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/ATechnoHazard/brutal-force/signup"
+	"github.com/google/uuid"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,7 +12,12 @@ import (
 
 func main()  {
 	for i := 0; i < 10000; i++ {
-		email := fmt.Sprintf("random%d@gmail.com", i)
+		id, err := uuid.NewUUID()
+		if err != nil {
+			log.Println(err)
+			continue
+		}
+		email := fmt.Sprintf("%v@gmail.com", id.String())
 		go testSignup(email)
 		log.Println("Hammering with", email)
 	}
