@@ -8,23 +8,29 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"sync"
 )
 
 func main()  {
-	for i := 0; i < 10000; i++ {
+	var wg sync.WaitGroup
+
+	for i := 0; i < 1000; i++ {
 		id, err := uuid.NewUUID()
 		if err != nil {
 			log.Println(err)
 			continue
 		}
 		email := fmt.Sprintf("%v@gmail.com", id.String())
-		go testSignup(email)
+		wg.Add(1)
+		go testSignup(email, &wg)
 		log.Println("Hammering with", email)
 	}
-	select {}
+	wg.Wait()
+	log.Println("Finished signup load test")
 }
 
-func testSignup(email string)  {
+func testSignup(email string, wg *sync.WaitGroup) {
+	defer wg.Done()
 	url := "https://api1.knockouts.dscvit.com/api/auth/signup/"
 	method := "POST"
 
