@@ -19,7 +19,7 @@ func main()  {
 }
 
 func testSignup(email string)  {
-	url := "https://api1.knockouts.dscvit.com/api/auth/signup"
+	url := "https://api1.knockouts.dscvit.com/api/auth/signup/"
 	method := "POST"
 
 	payload := signup.Request{
@@ -35,14 +35,14 @@ func testSignup(email string)  {
 	client := &http.Client {
 	}
 	req, err := http.NewRequest(method, url, bytes.NewReader(postBody))
-
 	if err != nil {
 		log.Println(err)
 		return
 	}
-	res, err := client.Do(req)
+	req.Header.Add("Content-Type", "application/json")
 
-	if (err != nil) {
+	res, err := client.Do(req)
+	if err != nil {
 		log.Println(err)
 		return
 	}
